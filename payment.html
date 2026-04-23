@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+
+<h1>💳 Secure Payment</h1>
+
+<div class="payment-box">
+
+    <input type="text" id="custName" placeholder="Name">
+    <input type="text" id="mobile" placeholder="Mobile">
+    <textarea id="address" placeholder="Address"></textarea>
+
+    <h3>Payment Method</h3>
+    <select id="method">
+        <option>UPI</option>
+        <option>Cash on Delivery</option>
+    </select>
+
+    <input type="text" id="upi" placeholder="example@upi">
+
+    <button onclick="payNow()">Pay Now</button>
+
+    <h2>🧾 Order Summary</h2>
+    <ul id="summary"></ul>
+    <h3 id="total"></h3>
+
+</div>
+
+</script>
+
+<script src="script.js"></script>
+
+</body>
+</html>

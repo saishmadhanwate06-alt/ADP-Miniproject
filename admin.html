@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="admin-container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>🍰 Admin Panel</h2>
+        <ul>
+            <li onclick="showSection('dashboardSection')">Dashboard</li>
+            <li onclick="showSection('dessertSection')">Desserts</li>
+            <li onclick="showSection('orderSection')">Orders</li>
+            <li onclick="showSection('feedbackSection')">Feedback</li>
+        </ul>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <div class="topbar">
+            <h1>Welcome Admin 👨‍💼</h1>
+            <button onclick="logout()">⬅ Logout</button>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div id="dashboardSection">
+            <div class="dashboard">
+                <div class="card">Total Orders <br><span id="totalOrders">0</span></div>
+                <div class="card">Total Revenue <br><span id="revenue">₹0</span></div>
+                <div class="card">Customers <br><span id="customers">0</span></div>
+                <div class="card">Desserts <br><span id="dessertCount">0</span></div>
+            </div>
+        </div>
+
+        <!-- DESSERT -->
+        <div id="dessertSection">
+            <div class="box">
+                <h2>Add New Dessert</h2>
+                <input type="text" id="name" placeholder="Dessert Name">
+                <input type="number" id="price" placeholder="Price">
+                <input type="text" id="image" placeholder="images/cake.jpg">
+                <button onclick="addDessert()">Add Dessert</button>
+            </div>
+
+            <div class="box">
+                <h2>Manage Desserts</h2>
+                <table>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                    <tbody id="dessertTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ORDERS -->
+        <div id="orderSection">
+            <div class="box">
+                <h2>🧾 Customer Orders</h2>
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Mobile</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                    <tbody id="orderTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- FEEDBACK -->
+        <div id="feedbackSection">
+            <div class="box">
+                <h2>Customer Feedback ⭐</h2>
+                <p id="avgRating">Average Rating: 0 ⭐</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+// SHOW SECTION
+function showSection(id){
+    document.getElementById("dashboardSection").style.display = "none";
+    document.getElementById("dessertSection").style.display = "none";
+    document.getElementById("orderSection").style.display = "none";
+    document.getElementById("feedbackSection").style.display = "none";
+
+    document.getElementById(id).style.display = "block";
+}
+
+// TIME
+function updateTime(){
+    let time = new Date().toLocaleString();
+}
+
+// ADD DESSERT
+function addDessert(){
+    let name = document.getElementById("name").value;
+    let price = document.getElementById("price").value;
+    let image = document.getElementById("image").value;
+
+    let data = JSON.parse(localStorage.getItem("desserts")) || [];
+    data.push({name, price, image});
+
+    localStorage.setItem("desserts", JSON.stringify(data));
+    alert("Dessert Added ✅");
+    loadDesserts();
+}
+
+// LOAD DESSERT
+function loadDesserts(){
+    let data = JSON.parse(localStorage.getItem("desserts")) || [];
+    let table = document.getElementById("dessertTable");
+
+    table.innerHTML = "";
+    document.getElementById("dessertCount").textContent = data.length;
+
+    data.forEach((d,i)=>{
+        table.innerHTML += `
+        <tr>
+            <td><img src="${d.image}" width="50"></td>
+            <td>${d.name}</td>
+            <td>₹${d.price}</td>
+            <td><button onclick="deleteDessert(${i})">Delete</button></td>
+        </tr>`;
+    });
+}
+
+// DELETE DESSERT
+function deleteDessert(i){
+    let data = JSON.parse(localStorage.getItem("desserts")) || [];
+    data.splice(i,1);
+    localStorage.setItem("desserts", JSON.stringify(data));
+    loadDesserts();
+}
+
+// LOAD ORDERS
+function loadOrders(){
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
+    let table = document.getElementById("orderTable");
+
+    table.innerHTML = "";
+    let totalRevenue = 0;
+    let customers = new Set();
+
+    orders.forEach((o,i)=>{
+        let itemsText = "";
+        let total = 0;
+
+        o.items.forEach(it=>{
+            let qty = it.qty || 1;
+            total += it.price * qty;
+            itemsText += it.name + " x" + qty + "<br>";
+        });
+
+        totalRevenue += total;
+        customers.add(o.mobile);
+
+        table.innerHTML += `
+        <tr>
+            <td>${o.name}</td>
+            <td>${o.mobile}</td>
+            <td>${itemsText}</td>
+            <td>₹${total}</td>
+            <td>${o.date}</td>
+            <td>
+                <select onchange="updateStatus(${i},this.value)">
+                    <option ${o.status=="Pending"?"selected":""}>Pending</option>
+                    <option ${o.status=="Delivered"?"selected":""}>Delivered</option>
+                </select>
+            </td>
+            <td><button onclick="deleteOrder(${i})">Delete</button></td>
+        </tr>`;
+    });
+
+    document.getElementById("totalOrders").textContent = orders.length;
+    document.getElementById("revenue").textContent = "₹" + totalRevenue;
+    document.getElementById("customers").textContent = customers.size;
+}
+
+// UPDATE STATUS
+function updateStatus(index,status){
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
+    orders[index].status = status;
+    localStorage.setItem("orders", JSON.stringify(orders));
+}
+
+// DELETE ORDER
+function deleteOrder(i){
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
+    orders.splice(i,1);
+    localStorage.setItem("orders", JSON.stringify(orders));
+    loadOrders();
+}
+
+// LOAD FEEDBACK
+function loadFeedback(){
+    let data = JSON.parse(localStorage.getItem("feedback")) || [];
+
+    if(data.length === 0){
+        document.getElementById("avgRating").textContent = "Average Rating: 0 ⭐";
+        return;
+    }
+
+    let total = 0;
+    data.forEach(f => total += f.rating);
+
+    let avg = (total / data.length).toFixed(1);
+
+    document.getElementById("avgRating").textContent =
+        "Average Rating: " + avg + " ⭐";
+}
+
+// LOGOUT
+function logout(){
+    window.location.href = "login.html";
+}
+
+// AUTO LOAD
+window.onload = function(){
+    showSection("dashboardSection");
+    loadDesserts();
+    loadOrders();
+    loadFeedback();
+}
+
+</script>
+
+</body>
+</html>

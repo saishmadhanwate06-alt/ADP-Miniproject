@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Feedback</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>💬 Feedback</h1>
+
+<div class="feedback-box">
+
+    <h2>How was your experience?</h2>
+
+    <!-- ⭐ STARS -->
+    <div class="stars">
+        <span onclick="setRating(1)">★</span>
+        <span onclick="setRating(2)">★</span>
+        <span onclick="setRating(3)">★</span>
+        <span onclick="setRating(4)">★</span>
+        <span onclick="setRating(5)">★</span>
+    </div>
+
+    <!-- TEXT -->
+    <textarea id="feedbackText" placeholder="Write your feedback..."></textarea>
+
+    <!-- BUTTON -->
+    <button onclick="submitFeedback()">Submit</button>
+
+    <!-- AVG -->
+    <h3 id="avgRating">Average Rating: 0 ⭐</h3>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
