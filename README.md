@@ -12,7 +12,7 @@ It is designed for ordering and exploring delicious desserts through a clean and
 - 🛒 Add to Cart functionality
 - 📦 Order page
 - 💬 Feedback form
-- 🔐 Login page (if included)
+- 🔐 Login page 
 - 🎨 Responsive design
 
 ---
@@ -22,7 +22,7 @@ It is designed for ordering and exploring delicious desserts through a clean and
 - HTML
 - CSS
 - JavaScript
-- Bootstrap (optional)
+
 
 ---
 
