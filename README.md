@@ -39,6 +39,7 @@ Dessert-Paradise/
 ├── script.js
 │
 ├── images/
+│ └── desserts
 │
 └── README.md
 
